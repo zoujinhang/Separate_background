@@ -103,7 +103,7 @@ class AirPLS(object):
 			bs = WhittakerSmooth(self.x,w,100)
 			cs = self.x - bs
 			drti = ((cs1-cs)**2).mean()
-			if(drti <0.01):
+			if(drti <1):
 				break
 			cs_mean = cs[w!=0].mean()
 			cs_std = cs[w!=0].std()

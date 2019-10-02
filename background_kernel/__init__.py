@@ -27,7 +27,7 @@ class AirPLS(object):
 
 		return (np.exp(x)-np.exp(-x))/(np.exp(x)+np.exp(-x))
 
-	def w_pp(self,w):
+	def w_pp(self,w,arg = 9,f = 18):
 		'''
 		对权重进行操作
 		该过程合并了权重比较琐碎的区域。
@@ -51,9 +51,9 @@ class AirPLS(object):
 
 				if first == False:
 					if(valu == 1):
-						F = (self.trag(ff,10)-self.trag(ff1,10))*8
+						F = (self.trag(ff,arg)-self.trag(ff1,arg))*f
 					else:
-						F = (self.trag(ff,10)-self.trag(ff1,10))*8
+						F = (self.trag(ff,arg)-self.trag(ff1,arg))*f
 					change_num = int(F)
 					if(change_num > 0):
 						if(rem_index-change_num<rem_index2):
@@ -96,7 +96,8 @@ class AirPLS(object):
 			cs_index = np.where((cs>cs_mean+(1+0.0*i)*cs_std)|(cs<cs_mean-(1+0.0*i)*cs_std))
 			cs1 = cs
 			w[cs_index] = 0
-			w = self.w_pp(w)
+			w = self.w_pp(w,arg = 5,f = 9)
+			w = self.w_pp(w,arg = 20,f = 30)
 			bs = WhittakerSmooth(self.x,w,100)
 			cs = self.x - bs
 			drti = ((cs1-cs)**2).mean()

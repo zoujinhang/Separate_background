@@ -26,7 +26,7 @@ class MC_separate(object):
 			if self.ch.size != self.t.size:
 				print('ch 与 t 参数长度不相同！不返回ch')
 				self.ch = None
-		self.S_index,self.B_index = self.work()
+		self.S_index,self.B_index = self.MC_kernel()
 
 		if self.ch is not None:
 			self.S = self.t[self.S_index],self.ch[self.S_index]
@@ -36,7 +36,11 @@ class MC_separate(object):
 			self.B = self.t[self.B_index]
 
 
-	def work(self):
+	def MC_kernel(self):
+		'''
+		这里可以通过一个多次迭代的马尔科夫方法分离样本。不过结果可能变化不大。
+		:return:
+		'''
 		S_index = []#来自源的光子集
 		B_index = []#来自背景的光子集
 

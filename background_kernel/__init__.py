@@ -15,7 +15,7 @@ class Baseline_in_time(object):
 		self.unified_time,self.unified_value = self.t_transform.to_unified_time()
 		self.AirPLS = AirPLS(self.unified_value,hardness = hardness)
 		self.unified_bs =self. AirPLS.double_airPLS()
-		self.bs = self.t_transform.to_actual_time(time,self.unified_bs)
+		self.bs = self.t_transform.to_actual_time(time,self.unified_bs)[1]
 		self.cs = self.value-self.bs
 
 	def get_value(self):
@@ -74,12 +74,12 @@ class AirPLS(object):
 		for i in range(num_w-1):
 			if(w[i] == w[i+1]):
 				ff = ff + 1
-				valu = w[i]
+				#valu = w[i]
 
 			else:
 
 				if first == False:
-					if(valu == 1):
+					if(w[i] == 1):
 						F = (self.trag(ff,rang)-self.trag(ff1,rang))*f
 					else:
 						F = (self.trag(ff,rang)-self.trag(ff1,rang))*f
@@ -90,7 +90,7 @@ class AirPLS(object):
 						else:
 							nnn = rem_index-change_num
 						change_index = np.arange(nnn,rem_index+1,1)
-						w[change_index] = valu
+						w[change_index] = w[i]
 
 					elif(change_num < 0):
 						if(rem_index-change_num>=i):
@@ -130,7 +130,7 @@ class AirPLS(object):
 			bs = WhittakerSmooth(self.x,w,100)
 			cs = self.x - bs
 			drti = ((cs1-cs)**2).mean()
-			if(drti <1):
+			if(drti <0.1):
 				break
 			cs_mean = cs[w!=0].mean()
 			cs_std = cs[w!=0].std()

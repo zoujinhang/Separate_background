@@ -1,6 +1,6 @@
 import numpy as np
 
-def bayesian_rate_edges(t,prior = 1.5):
+def bayesian_rate_edges(t,prior = 2.5):
 	t = np.asarray(t)
 
 	t = np.sort(t)

@@ -132,6 +132,9 @@ class AirPLS(object):
 			drti = ((cs1-cs)**2).mean()
 			if(drti <0.1):
 				break
+			if(len(w[w!=0]) < self.m * 0.1):
+				print('baseline 采样区间小于总区间的 10%，可能出现过拟合。建议检查拟合情况。')
+				break
 			cs_mean = cs[w!=0].mean()
 			cs_std = cs[w!=0].std()
 

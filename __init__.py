@@ -35,41 +35,81 @@ class Separate_background(object):
 		#self.t = t
 		#self.ch = ch
 		self.ch_n = ch_n
+		self.get_background()
+		self.check_background()
+
+
+	def separate_background_for_one_ch(self,t,ch,ch_n):
+		t = t[np.where(ch == ch_n)]
+		if len(t) == 0:
+			return np.array([]),np.array([])
+		Era = Event_rate_analysis(t,time_range=[self.time_start,self.time_stop])
+		GPS = Era.get_wt_GPS()
+		#GPS = Era.get_GPS()
+		BPS = Era.get_BPS()
+		#print('GPS \n',GPS)
+		#print('BPS \n',BPS)
+		mc = MC_separate(t,GPS,BPS)
+		return mc.S,mc.B
+
+	def get_background(self):
 
 		s = np.array([])
 		b = np.array([])
 		s_ch = np.array([])
 		b_ch = np.array([])
 		for i in self.ch_n:
-			print('inite channel ',i)
-			S,B = self.separate_background_for_one_ch(i)
+			print('inite channel ', i)
+			S, B = self.separate_background_for_one_ch(self.t, self.ch, i)
 			S_ch = np.zeros_like(S) + i
 			B_ch = np.zeros_like(B) + i
-			s = np.concatenate((s,S))
-			s_ch = np.concatenate((s_ch,S_ch))
-			b = np.concatenate((b,B))
-			b_ch = np.concatenate((b_ch,B_ch))
+			s = np.concatenate((s, S))
+			s_ch = np.concatenate((s_ch, S_ch))
+			b = np.concatenate((b, B))
+			b_ch = np.concatenate((b_ch, B_ch))
 		s_index = np.argsort(s)
 		b_index = np.argsort(b)
 		self.s = s[s_index]
 		self.s_ch = s_ch[s_index]
 		self.b = b[b_index]
 		self.b_ch = b_ch[b_index]
-		self.check_background()
 
-
-	def separate_background_for_one_ch(self,ch_n):
-		t = self.t[np.where(self.ch == ch_n)]
-		Era = Event_rate_analysis(t,time_range=[self.time_start,self.time_stop])
-		GPS = Era.get_GPS()
-		BPS = Era.get_BPS()
-		#print('GPS \n',GPS)
-		#print('BPS \n',BPS)
-		mc = MC_separate(t,GPS,BPS)
-		return mc.S,mc.B
 	def check_background(self):
+		'''
+		背景检查，首先逐能道检查背景，然后检查总背景，以防背景过扣。
+		:return:
+		'''
+		#-------------------------------------------------------------------------------------------------------
+		b_s = np.array([])                                                          #逐能道检测背景部分
+		b_b = np.array([])
+		b_s_ch = np.array([])
+		b_b_ch = np.array([])
+		for i in self.ch_n:
+			print('check channel ', i)
+			b_S, b_B = self.separate_background_for_one_ch(self.b, self.b_ch, i)
+			S_ch = np.zeros_like(b_S) + i
+			B_ch = np.zeros_like(b_B) + i
+			b_s = np.concatenate((b_s, b_S))
+			b_s_ch = np.concatenate((b_s_ch, S_ch))
+			b_b = np.concatenate((b_b, b_B))
+			b_b_ch = np.concatenate((b_b_ch, B_ch))
+		b_s_index = np.argsort(b_s)
+		b_b_index = np.argsort(b_b)
+		c_s = b_s[b_s_index]
+		c_s_ch = b_s_ch[b_s_index]
 
-		Bra = Event_rate_analysis(self.b)
+		c_b = b_b[b_b_index]
+		c_b_ch = b_b_ch[b_b_index]
+		self.b = c_b
+		self.b_ch = c_b_ch
+		c_s = np.concatenate((c_s, self.s))
+		c_s_ch = np.concatenate((c_s_ch, self.s_ch))
+		sort_index = np.argsort(c_s)
+		self.s = c_s[sort_index]
+		self.s_ch = c_s_ch[sort_index]
+		#-------------------------------------------------------------------------------------------------------
+		print('check gross')
+		Bra = Event_rate_analysis(self.b)                                   #背景的总体检测部分
 		GPS = Bra.get_GPS()
 		BPS = Bra.get_BPS()
 		mc = MC_separate(self.b,GPS,BPS,ch = self.b_ch)
@@ -84,9 +124,7 @@ class Separate_background(object):
 		sort_index = np.argsort(c_s)
 		self.s = c_s[sort_index]
 		self.s_ch = c_s_ch[sort_index]
-
-
-
+		#-------------------------------------------------------------------------------------------------------
 
 	def get_S(self):
 		return self.s

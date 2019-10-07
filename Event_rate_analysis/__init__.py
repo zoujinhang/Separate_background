@@ -1,11 +1,11 @@
 from .bayesian_rate_edges import *
 from ..background_kernel import Baseline_in_time
 import numpy as np
-
+from .WT_kernel import WT_kernel
 
 class Event_rate_analysis(object):
 
-	def __init__(self,t,ch = None,time_range = None):
+	def __init__(self,t,time_range = None):
 
 		#self.ch = ch
 		if time_range is None:
@@ -28,12 +28,20 @@ class Event_rate_analysis(object):
 		#print(self.t)
 		#print(bin_edges)
 		#print(bs)
-		return np.interp(self.t,bin_edges,bs)
+		BPS = np.interp(self.t,bin_edges,bs)
+		#rand = np.random.normal(BPS.size)*np.sqrt(BPS)
 
-	def get_GPS(self):
-		edges = np.arange(self.time_start,self.time_stop+1,1)
-		#edges = bayesian_rate_edges(self.t,prior = 1.5)
-		print('bayesian l ',len(edges))
+		return BPS #+ rand
+
+	def get_GPS(self,binsize = 1):
+		'''
+		等时切片，分析GPS，这样分析的结果存在切片精度的问题。
+		:param binsize:
+		:return:
+		'''
+		edges = np.arange(self.time_start,self.time_stop+binsize,binsize)
+		#edges = bayesian_rate_edges(self.t,prior = 1.)
+		#print('bayesian l ',len(edges))
 		bin_n,bin_edges = np.histogram(self.t,bins = edges)
 		bin_size = bin_edges[1:]-bin_edges[:-1]
 		bin_rate = bin_n/bin_size
@@ -44,9 +52,12 @@ class Event_rate_analysis(object):
 
 		return np.interp(self.t,bin_c,bin_rate)
 
-
-
-
+	def get_wt_GPS(self):
+		'''
+		使用WT分析GPS，计算量会大一些。分析结果不存在切片精度问题。
+		:return:
+		'''
+		return WT_kernel(self.t).rate
 
 
 

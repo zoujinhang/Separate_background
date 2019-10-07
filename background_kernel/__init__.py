@@ -34,10 +34,16 @@ class Baseline_in_time(object):
 class AirPLS(object):
 
 	def __init__(self,x,hardness = False):
+		self.b_index = np.isnan(x)
 		self.x = np.array(x)
+
 		self.m = self.x.shape[0]
 
 		self.w = np.ones(self.m)
+		if (True in self.b_index):
+			print('数据输入存在存在无效值')
+			self.x[self.b_index] = 0
+			self.w[self.b_index] = 0
 
 		if hardness:
 			self.x = WhittakerSmooth(self.x,self.w,4)
@@ -126,7 +132,9 @@ class AirPLS(object):
 			cs1 = cs
 			w[cs_index] = 0
 			w = self.w_pp(w,rang = 5,f = 9)
-			w = self.w_pp(w,rang = 20,f = 30)
+			w = self.w_pp(w,rang = 10,f = 18)#rang = 10,f = 18
+			w[self.b_index] = 0	#忽略无效值
+
 			bs = WhittakerSmooth(self.x,w,100)
 			cs = self.x - bs
 			drti = ((cs1-cs)**2).mean()

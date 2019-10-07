@@ -10,9 +10,6 @@ from .Event_rate_analysis import *
 import numpy as np
 
 
-
-
-
 class Separate_background(object):
 	'''
 
@@ -59,7 +56,7 @@ class Separate_background(object):
 		s_ch = np.array([])
 		b_ch = np.array([])
 		for i in self.ch_n:
-			print('inite channel ', i)
+			print('inite channel ', i,end = '\r')
 			S, B = self.separate_background_for_one_ch(self.t, self.ch, i)
 			S_ch = np.zeros_like(S) + i
 			B_ch = np.zeros_like(B) + i
@@ -85,7 +82,7 @@ class Separate_background(object):
 		b_s_ch = np.array([])
 		b_b_ch = np.array([])
 		for i in self.ch_n:
-			print('check channel ', i)
+			print('check channel ', i,end = '\r')
 			b_S, b_B = self.separate_background_for_one_ch(self.b, self.b_ch, i)
 			S_ch = np.zeros_like(b_S) + i
 			B_ch = np.zeros_like(b_B) + i
@@ -108,7 +105,7 @@ class Separate_background(object):
 		self.s = c_s[sort_index]
 		self.s_ch = c_s_ch[sort_index]
 		#-------------------------------------------------------------------------------------------------------
-		print('check gross')
+		print('check gross \r')
 		Bra = Event_rate_analysis(self.b)                                   #背景的总体检测部分
 		GPS = Bra.get_GPS()
 		BPS = Bra.get_BPS()
@@ -124,6 +121,7 @@ class Separate_background(object):
 		sort_index = np.argsort(c_s)
 		self.s = c_s[sort_index]
 		self.s_ch = c_s_ch[sort_index]
+		print('check over!')
 		#-------------------------------------------------------------------------------------------------------
 
 	def get_S(self):

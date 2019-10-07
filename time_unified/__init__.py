@@ -49,6 +49,13 @@ class Time_transform(object):
 	def to_actual_time(self,time,value):
 
 		try:
+			if(time[0] != self.time[0]):
+				time = np.concatenate(([self.time[0]],time))
+				value = np.concatenate(([value[0]],value))
+			if(time[-1] != self.time[-1]):
+				time = np.concatenate((time, [self.time[-1]]))
+				value = np.concatenate((value,[value[0]] ))
+
 			actual_value = np.interp(self.time,time,value)
 			return self.time,actual_value
 		except:

@@ -15,7 +15,7 @@ class Baseline_in_time(object):
 		self.unified_time,self.unified_value = self.t_transform.to_unified_time()
 		self.AirPLS = AirPLS(self.unified_value,hardness = hardness)
 		self.unified_bs =self. AirPLS.double_airPLS()
-		self.bs = self.t_transform.to_actual_time(time,self.unified_bs)[1]
+		self.bs = self.t_transform.to_actual_time(self.unified_time,self.unified_bs)[1]
 		self.cs = self.value-self.bs
 
 	def get_value(self):

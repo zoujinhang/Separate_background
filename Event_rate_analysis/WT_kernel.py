@@ -7,9 +7,8 @@ class WT_kernel(object):
 
 	def __init__(self,t):
 
-		t = np.asarray(t)
 
-		self.t = t
+		self.t = np.array(t)
 		self.wt = self.work_WT()
 		self.rate = 1.0/self.wt
 
@@ -23,8 +22,17 @@ class WT_kernel(object):
 		return np.exp(-(x-x0)**2/(2*sigma**2))
 
 	def work_WT(self):
+		#这里的卷积有些慢。
 		dt = self.t[1:]-self.t[:-1]
 		wt = []
+		for index,value in enumerate(self.t):
+			ww = self.weight(self.t,value,0.512)  #长度为t的长度。
+			dti = np.insert(dt,index,0)
+			ww_sum = ww.sum()-1
+			wti = (dti*ww).sum()/ww_sum
+			wt.append(wti)
+
+		'''
 		n = len(self.t)
 		nn = np.arange(0,n,1)
 		x = np.arange(-100, 101, 1)
@@ -52,6 +60,7 @@ class WT_kernel(object):
 			weit_sum = weit_ar.sum()-1
 			wti = (dti[i_index]*weit_ar).sum()/weit_sum
 			wt.append(wti)
+		'''
 		return np.array(wt)
 
 

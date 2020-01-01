@@ -56,7 +56,7 @@ class Separate_background(object):
 		s_ch = np.array([])
 		b_ch = np.array([])
 		for i in self.ch_n:
-			print('inite channel ', i,end = '\r')
+			print('inite channel ', i)
 			S, B = self.separate_background_for_one_ch(self.t, self.ch, i)
 			S_ch = np.zeros_like(S) + i
 			B_ch = np.zeros_like(B) + i
@@ -105,6 +105,7 @@ class Separate_background(object):
 		self.s = c_s[sort_index]
 		self.s_ch = c_s_ch[sort_index]
 		#-------------------------------------------------------------------------------------------------------
+		'''
 		print('check gross \r')
 		Bra = Event_rate_analysis(self.b)                                   #背景的总体检测部分
 		GPS = Bra.get_GPS()
@@ -122,6 +123,7 @@ class Separate_background(object):
 		self.s = c_s[sort_index]
 		self.s_ch = c_s_ch[sort_index]
 		print('check over!')
+		'''
 		#-------------------------------------------------------------------------------------------------------
 
 	def get_S(self):

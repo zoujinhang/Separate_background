@@ -52,14 +52,40 @@ class Event_rate_analysis(object):
 
 		return np.interp(self.t,bin_c,bin_rate)
 
-	def get_wt_GPS(self):
+	def get_wt_GPS(self,prior = 1.1):
 		'''
 		使用WT分析GPS，计算量会大一些。分析结果不存在切片精度问题。
 		:return:
+
+		#edges = np.arange(self.time_start, self.time_stop + binsize, binsize)
+		edges = fast_bayesian_rate_edges(self.t,prior =prior)
+		# print('bayesian l ',len(edges))
+		bin_n, bin_edges = np.histogram(self.t, bins=edges)
+		bin_size = bin_edges[1:] - bin_edges[:-1]
+		bin_rate = bin_n / bin_size
+		bin_c = (bin_edges[1:] + bin_edges[:-1]) * 0.5
+
+		bin_c = np.concatenate(([self.time_start], bin_c, [self.time_stop]))
+		bin_rate = np.concatenate(([bin_rate[0]], bin_rate, [bin_rate[-1]]))
+
+		return np.interp(self.t, bin_c, bin_rate)
+
 		'''
 		return WT_kernel(self.t).rate
 
+	def get_bayesian_GPS(self,prior = 1.5):
+		#edges = np.arange(self.time_start, self.time_stop + binsize, binsize)
+		edges = bayesian_rate_edges(self.t,prior = prior)
+		# print('bayesian l ',len(edges))
+		bin_n, bin_edges = np.histogram(self.t, bins=edges)
+		bin_size = bin_edges[1:] - bin_edges[:-1]
+		bin_rate = bin_n / bin_size
+		bin_c = (bin_edges[1:] + bin_edges[:-1]) * 0.5
 
+		bin_c = np.concatenate(([self.time_start], bin_c, [self.time_stop]))
+		bin_rate = np.concatenate(([bin_rate[0]], bin_rate, [bin_rate[-1]]))
+
+		return np.interp(self.t, bin_c, bin_rate)
 
 
 

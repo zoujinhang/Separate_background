@@ -20,7 +20,7 @@
 
 3). 下面这幅图展示的扣除背景光子的GRB事件。
 
-![figure 2](https://github.com/zoujinhang/Separate_background/tree/master/picture/A_s.png)
+![figure 3](https://github.com/zoujinhang/Separate_background/tree/master/picture/A_s.png)
 
 
 

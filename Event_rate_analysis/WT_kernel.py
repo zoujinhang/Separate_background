@@ -2,6 +2,8 @@
 
 '''
 import numpy as np
+from ..background_kernel.WhittakerSmooth import WhittakerSmooth
+
 
 class WT_kernel(object):
 
@@ -10,7 +12,10 @@ class WT_kernel(object):
 
 		self.t = np.array(t)
 		self.wt = self.work_WT()
-		self.rate = 1.0/self.wt
+		rate = 1.0/self.wt
+		w = np.ones(rate.size)
+		self.rate = WhittakerSmooth(rate,w,2)
+
 
 	def get_wt(self):
 		return self.wt
@@ -26,12 +31,12 @@ class WT_kernel(object):
 		dt = self.t[1:]-self.t[:-1]
 		wt = []
 		for index,value in enumerate(self.t):
-			ww = self.weight(self.t,value,0.512)  #长度为t的长度。
+			ww = self.weight(self.t,value,1.024)  #长度为t的长度。
 			dti = np.insert(dt,index,0)
 			ww_sum = ww.sum()-1
 			wti = (dti*ww).sum()/ww_sum
 			wt.append(wti)
-
+		wt = np.array(wt)
 		'''
 		n = len(self.t)
 		nn = np.arange(0,n,1)
@@ -61,7 +66,7 @@ class WT_kernel(object):
 			wti = (dti[i_index]*weit_ar).sum()/weit_sum
 			wt.append(wti)
 		'''
-		return np.array(wt)
+		return wt
 
 
 

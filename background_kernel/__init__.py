@@ -179,6 +179,8 @@ def TD_baseline(time,rate,lam = None,hwi = None,it = None,inti = None):
 
 	if(lam is None):
 		lam = 100/dt
+	else:
+		lam = lam/dt
 	if(hwi is None):
 		hwi = int(20/dt)
 	if(it is None):

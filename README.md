@@ -14,15 +14,15 @@
 
 1). 下面这幅图展示的是原始的TTE数据，图中每一个黑色点代表一个光子。
 
-![figure 1](https://github.com/zoujinhang/Separate_background/tree/master/picture/A_original.png)
+![figure 1](https://github.com/zoujinhang/Separate_background/blob/master/picture/A_original.png)
 
 2). 下面这幅图展示的是算法分离处理的背景光子。
 
-![figure 2](https://github.com/zoujinhang/Separate_background/tree/master/picture/A_b.png)
+![figure 2](https://github.com/zoujinhang/Separate_background/blob/master/picture/A_b.png)
 
 3). 下面这幅图展示的扣除背景光子的GRB事件。
 
-![figure 3](https://github.com/zoujinhang/Separate_background/tree/master/picture/A_s.png)
+![figure 3](https://github.com/zoujinhang/Separate_background/blob/master/picture/A_s.png)
 
 
 
